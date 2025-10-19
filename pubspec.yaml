@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -51,8 +52,31 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - assets/fonts/airbnb-cereal-font/
+    - assets/images/logo.png
+    # 2. Then, register the fonts under the 'fonts' section
+  fonts:
+    - family: AirbnbCereal
+      fonts:
+        - asset: assets/fonts/airbnb-cereal-font/AirbnbCereal_W_Lt.otf
+          weight: 300  # Light
 
-  # The following line ensures that the Material Icons font is
+        - asset: assets/fonts/airbnb-cereal-font/AirbnbCereal_W_Bk.otf
+          weight: 400  # Book (Regular)
+
+        - asset: assets/fonts/airbnb-cereal-font/AirbnbCereal_W_Md.otf
+          weight: 500  # Medium
+
+        - asset: assets/fonts/airbnb-cereal-font/AirbnbCereal_W_Bd.otf
+          weight: 700  # Bold
+
+        - asset: assets/fonts/airbnb-cereal-font/AirbnbCereal_W_XBd.otf
+          weight: 800  # Extra Bold
+
+        - asset: assets/fonts/airbnb-cereal-font/AirbnbCereal_W_Blk.otf
+          weight: 900  # Black
+# The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
