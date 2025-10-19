@@ -1,4 +1,4 @@
-import 'package:campus_pulse/screens/landscreen.dart';
+import 'package:campus_pulse/screens/student_homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'CampusPulse',
-      home: LandScreen(),
+      home: StudentLoginScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

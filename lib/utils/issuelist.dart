@@ -1,0 +1,42 @@
+final List<Map<String, dynamic>> mockIssues = [
+  {
+    'id': '1',
+    'title': 'Leaking faucet in Room 301, Block B',
+    'domain': 'Hostel Life',
+    'status': 'Unresolved',
+    'isResolved': false,
+    'imageUrl': 'https://picsum.photos/seed/faucet/400/300',
+  },
+  {
+    'id': '2',
+    'title': 'Wi-Fi not working in the main library',
+    'domain': 'Academics',
+    'status': 'Resolved',
+    'isResolved': true,
+    'imageUrl': 'https://picsum.photos/seed/library/400/300',
+  },
+  {
+    'id': '3',
+    'title': 'Waste bins overflowing near C-Block',
+    'domain': 'Sanitation',
+    'status': 'Unresolved',
+    'isResolved': false,
+    'imageUrl': 'https://picsum.photos/seed/bins/400/300',
+  },
+  {
+    'id': '4',
+    'title': 'Broken streetlight on the main pathway',
+    'domain': 'Infra',
+    'status': 'Unresolved',
+    'isResolved': false,
+    'imageUrl': 'https://picsum.photos/seed/streetlight/400/300',
+  },
+  {
+    'id': '5',
+    'title': 'Poor food quality in Mess 2 on Monday',
+    'domain': 'Mess Food',
+    'status': 'Resolved',
+    'isResolved': true,
+    'imageUrl': 'https://picsum.photos/seed/food/400/300',
+  },
+];
