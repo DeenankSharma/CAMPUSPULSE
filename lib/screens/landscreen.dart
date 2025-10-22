@@ -23,7 +23,10 @@ class LandScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/images/logo.png"),
+              Image.asset(
+                "assets/images/logo.png", height: 250,
+                // scale: ,
+              ),
               Text(
                 "CampusPulse",
                 style: TextStyle(
