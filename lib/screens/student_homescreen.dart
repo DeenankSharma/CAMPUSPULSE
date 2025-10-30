@@ -1,17 +1,19 @@
+import 'package:campus_pulse/providers/student_details_provider.dart';
 import 'package:campus_pulse/widgets/selection_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/issuecategories.dart';
 import '../utils/issuelist.dart';
 import '../widgets/issuetile.dart';
 
-class StudentLoginScreen extends StatelessWidget {
-  const StudentLoginScreen({super.key});
+class StudentHomescreen extends StatelessWidget {
+  const StudentHomescreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-
+    String name = context.watch<LoginDetailsProvider>().name.toString();
     // Get the full screen height
     final double fullScreenHeight = screenSize.height;
     final double fullScreenWidth = screenSize.width;
@@ -29,7 +31,7 @@ class StudentLoginScreen extends StatelessWidget {
               ))
         ],
         title: Text(
-          "Hi, Deenank",
+          'Hi, $name',
           style: TextStyle(
               fontFamily: "AirbnbCereal", fontWeight: FontWeight.w900),
         ),

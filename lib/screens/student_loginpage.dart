@@ -1,21 +1,84 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
-// import 'package.flutter/material.dart';
+import '../providers/student_details_provider.dart';
 
-class StudentLoginpage extends StatefulWidget {
-  const StudentLoginpage({super.key});
+class StudentLoginScreen extends StatefulWidget {
+  const StudentLoginScreen({super.key});
 
   @override
-  State<StudentLoginpage> createState() => _StudentLoginpageState();
+  State<StudentLoginScreen> createState() => _StudentLoginpageState();
 }
 
-class _StudentLoginpageState extends State<StudentLoginpage> {
+class _StudentLoginpageState extends State<StudentLoginScreen> {
   final _enrollmentController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _enrollmentController.dispose();
     super.dispose();
+  }
+
+  Future<void> _submitLogin() async {
+    final enrollmentNumber = _enrollmentController.text.trim();
+
+    // Basic validation
+    if (enrollmentNumber.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter an enrollment number.")),
+      );
+      return;
+    }
+
+    // 1. Start loading
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      print("sending request from screen");
+      // 2. Call the provider's function
+      // We use context.read() here because we are in a function
+      // and not in the build method.
+      final loginProvider = context.read<LoginDetailsProvider>();
+      await loginProvider.fetchAndSetStudentDetails(enrollmentNumber);
+
+      // 3. Check for success *after* the await
+      // Your provider sets 'name' to "Error" on failure.
+      if (loginProvider.name != "Error") {
+        // Success! Navigate to the home page.
+        // We check 'mounted' because this is an async operation.
+        if (mounted) {
+          // Use pushReplacement so the user can't go "back" to the login screen
+          context.go('/studenthome');
+        }
+      } else {
+        // Handle the error (e.g., student not found)
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content:
+                    Text("Login Failed. Please check your enrollment number.")),
+          );
+        }
+      }
+    } catch (e) {
+      // Handle any other unexpected errors
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("An error occurred: $e")),
+        );
+      }
+    } finally {
+      // 4. Stop loading, no matter what
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   // Helper for consistent text field styling, matching your theme
@@ -123,11 +186,7 @@ class _StudentLoginpageState extends State<StudentLoginpage> {
           child: SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                // TODO: Add login logic here
-                final enrollmentNumber = _enrollmentController.text;
-                debugPrint("Enrollment Number: $enrollmentNumber");
-              },
+              onPressed: _isLoading ? null : _submitLogin,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromRGBO(255, 90, 96, 1.0),
                 foregroundColor: const Color.fromRGBO(255, 251, 230, 1.0),
@@ -136,14 +195,23 @@ class _StudentLoginpageState extends State<StudentLoginpage> {
                   borderRadius: BorderRadius.circular(12.0),
                 ),
               ),
-              child: const Text(
-                "Submit",
-                style: TextStyle(
-                  fontFamily: "AirbnbCereal",
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              child: _isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: Color.fromRGBO(255, 251, 230, 1.0),
+                        strokeWidth: 2.5,
+                      ),
+                    )
+                  : const Text(
+                      "Submit",
+                      style: TextStyle(
+                        fontFamily: "AirbnbCereal",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
             ),
           ),
         ),

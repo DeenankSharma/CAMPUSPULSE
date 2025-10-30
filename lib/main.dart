@@ -1,6 +1,10 @@
-import 'package:campus_pulse/screens/student_loginpage.dart';
+import 'package:campus_pulse/providers/student_details_provider.dart';
+import 'package:campus_pulse/routes/app_route_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+final AppRouter appRouter = AppRouter();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +19,9 @@ void main() {
       systemNavigationBarContrastEnforced: false,
     ),
   );
-  runApp(MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => LoginDetailsProvider())
+  ],child: MyApp(),));
 }
 
 class MyApp extends StatelessWidget {
@@ -23,9 +29,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'CampusPulse',
-      home: StudentLoginpage(),
+      routerConfig: appRouter.router,
       debugShowCheckedModeBanner: false,
     );
   }
