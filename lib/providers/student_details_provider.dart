@@ -9,7 +9,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class LoginDetailsProvider extends ChangeNotifier {
   // Private backing fields for your properties.
   String base_url = dotenv.env['BASE_URL'].toString();
-
+  // print()
   int _enr = 0;
   String _name = "";
   String _dept = "";
@@ -42,6 +42,7 @@ class LoginDetailsProvider extends ChangeNotifier {
   /// to rebuild any widgets that are watching this provider.
   Future<void> fetchAndSetStudentDetails(String enrNumber) async {
     print("request recieved in provider");
+    print(base_url);
     // --- IMPORTANT ---
     // Replace this with your actual API endpoint
     final String apiUrl = '$base_url/stufac/$enrNumber';

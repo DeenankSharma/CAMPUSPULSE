@@ -78,7 +78,7 @@ class LandScreen extends StatelessWidget {
                 width: double
                     .infinity, // Makes the button fill the available width
                 child: ElevatedButton(
-                  onPressed: () => {},
+                  onPressed: () => context.pushNamed('emp_login'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromRGBO(255, 90, 96, 1.0),
                     foregroundColor: Color.fromRGBO(255, 251, 230, 1.0),

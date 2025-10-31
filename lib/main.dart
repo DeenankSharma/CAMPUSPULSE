@@ -1,3 +1,4 @@
+import 'package:campus_pulse/providers/employee_details_provider.dart';
 import 'package:campus_pulse/providers/issue_provider.dart';
 import 'package:campus_pulse/providers/student_details_provider.dart';
 import 'package:campus_pulse/routes/app_route_config.dart';
@@ -23,6 +24,7 @@ Future<void> main() async {
   );
   runApp(MultiProvider(
     providers: [
+      ChangeNotifierProvider(create: (context) => EmployeeAuthProvider()),
       ChangeNotifierProvider(create: (context) => LoginDetailsProvider()),
       ChangeNotifierProvider(create: (context) => IssuesProvider())
     ],

@@ -1,3 +1,7 @@
+import 'package:campus_pulse/screens/employee_homescreen.dart';
+import 'package:campus_pulse/screens/employee_login.dart';
+import 'package:campus_pulse/screens/employee_profilescreen.dart';
+import 'package:campus_pulse/screens/employee_signup.dart';
 import 'package:campus_pulse/screens/profile_screen.dart';
 import 'package:campus_pulse/screens/student_homescreen.dart';
 import 'package:campus_pulse/screens/student_loginpage.dart';
@@ -14,9 +18,11 @@ class AppRouter {
   static const String studentHomeRoute = '/studenthome';
   static const String addissueRoute = '/add_issue';
   static const String studentLoginRoute = '/studentlogin';
+  static const String employeeLoginRoute = '/emplogin';
   static const String profileRoute = '/profile';
-  // static const String issueDetailRoute = 'issueDetail';
-  // static const String addissueRoute = '/add_issue';
+  static const String employeeSignupRoute = '/empsignup';
+  static const String employeeHomeRoute = '/emphome';
+  static const String employeeProfileRoute = '/empprofile';
 
   // 3. Create the simple router
   GoRouter router = GoRouter(
@@ -52,10 +58,38 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: employeeHomeRoute,
+        name: 'emphome',
+        pageBuilder: (context, state) {
+          return MaterialPage(child: EmployeeHomeScreen());
+        },
+      ),
+      GoRoute(
+        path: employeeProfileRoute,
+        name: 'empprofile',
+        pageBuilder: (context, state) {
+          return MaterialPage(child: EmployeeProfileScreen());
+        },
+      ),
+      GoRoute(
         path: studentLoginRoute,
         name: 'login',
         pageBuilder: (context, state) {
           return const MaterialPage(child: StudentLoginScreen());
+        },
+      ),
+      GoRoute(
+        path: employeeLoginRoute,
+        name: 'emp_login',
+        pageBuilder: (context, state) {
+          return const MaterialPage(child: EmployeeLoginScreen());
+        },
+      ),
+      GoRoute(
+        path: employeeSignupRoute,
+        name: 'emp_signup',
+        pageBuilder: (context, state) {
+          return const MaterialPage(child: EmployeeSignUpScreen());
         },
       ),
       GoRoute(
