@@ -1,14 +1,16 @@
+import 'package:campus_pulse/providers/issue_provider.dart';
 import 'package:campus_pulse/providers/student_details_provider.dart';
 import 'package:campus_pulse/routes/app_route_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 final AppRouter appRouter = AppRouter();
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await dotenv.load(fileName: ".env");
   // Enable edge-to-edge display
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
@@ -19,9 +21,13 @@ void main() {
       systemNavigationBarContrastEnforced: false,
     ),
   );
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => LoginDetailsProvider())
-  ],child: MyApp(),));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => LoginDetailsProvider()),
+      ChangeNotifierProvider(create: (context) => IssuesProvider())
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

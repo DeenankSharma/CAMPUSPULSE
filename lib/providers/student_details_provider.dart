@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart'; // Import the dio package
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // --- Mock API Service (Removed) ---
 // We are now using Dio for real network requests.
@@ -7,6 +8,9 @@ import 'package:flutter/foundation.dart';
 // --- Your Provider Class ---
 class LoginDetailsProvider extends ChangeNotifier {
   // Private backing fields for your properties.
+  String base_url = dotenv.env['BASE_URL'].toString();
+
+  int _enr = 0;
   String _name = "";
   String _dept = "";
   String _hostel = "";
@@ -21,13 +25,14 @@ class LoginDetailsProvider extends ChangeNotifier {
   // --- 1. Getter Functions ---
   // These are the public "getters" you asked for.
   // Widgets can use these to read the current state.
+  int get enr => _enr;
   String get name => _name;
   String get dept => _dept;
   String get hostel => _hostel;
   String get gender => _gender;
   int get year => _year;
   int get semester => _semester;
-  bool get istudnet => _isstudent;
+  bool get isstudent => _isstudent;
 
   // --- 2. Function to Fetch and Set Details (Updated with Dio) ---
   /// Fetches student details based on the enrollment number
@@ -39,7 +44,7 @@ class LoginDetailsProvider extends ChangeNotifier {
     print("request recieved in provider");
     // --- IMPORTANT ---
     // Replace this with your actual API endpoint
-    final String apiUrl = '$enrNumber';
+    final String apiUrl = '$base_url/stufac/$enrNumber';
 
     try {
       // 1. Call the API service using Dio
@@ -53,6 +58,7 @@ class LoginDetailsProvider extends ChangeNotifier {
         final data = response.data['data'] as Map<String, dynamic>;
         // print(data);
         // 2. Set the details in this provider
+        _enr = data['enr'];
         _name = data['name']?.trim();
         _dept = data['dept']?.trim();
         _hostel = data['hostel']?.trim();
@@ -71,6 +77,7 @@ class LoginDetailsProvider extends ChangeNotifier {
       // This catches Dio-specific errors (network issues, timeouts, 404s, etc.)
       debugPrint("Dio error fetching student details: $e");
       // Optionally set an error state here
+      _enr = 0;
       _name = "Error";
       _dept = "Error";
       _hostel = "Error";

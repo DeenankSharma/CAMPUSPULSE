@@ -1,8 +1,10 @@
+import 'package:campus_pulse/screens/profile_screen.dart';
 import 'package:campus_pulse/screens/student_homescreen.dart';
 import 'package:campus_pulse/screens/student_loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../screens/issue_expansion_screen.dart';
 import '../screens/landscreen.dart';
 import '../screens/reportissue.dart';
 
@@ -12,12 +14,36 @@ class AppRouter {
   static const String studentHomeRoute = '/studenthome';
   static const String addissueRoute = '/add_issue';
   static const String studentLoginRoute = '/studentlogin';
+  static const String profileRoute = '/profile';
+  // static const String issueDetailRoute = 'issueDetail';
   // static const String addissueRoute = '/add_issue';
 
   // 3. Create the simple router
   GoRouter router = GoRouter(
     // initialLocation: loginRoute, // Start the app at the login page
     routes: [
+      GoRoute(
+        name: 'issueDetail',
+        // The :id part is a variable. GoRouter will capture whatever
+        // comes after /issue/ and pass it as a path parameter.
+        path: '/issue/:id',
+        builder: (context, state) {
+          // 1. Extract the 'id' string from the route
+          final String idString = state.pathParameters['id'] ?? '0';
+
+          // 2. Convert it to an integer
+          final int issueId = int.tryParse(idString) ?? 0;
+
+          // 3. Pass the integer ID to your new screen
+          return IssueDetailScreen(issueId: issueId);
+        },
+      ),
+      GoRoute(
+          path: profileRoute,
+          name: 'profile',
+          pageBuilder: (context, state) {
+            return MaterialPage(child: ProfileScreen());
+          }),
       GoRoute(
         path: landingRoute,
         name: 'initial',
