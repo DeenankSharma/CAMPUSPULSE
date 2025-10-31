@@ -1,5 +1,5 @@
 import 'package:campus_pulse/providers/student_details_provider.dart';
-import 'package:campus_pulse/widgets/selection_tile.dart';
+// import 'package:campus_pulse/widgets/selection_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +17,14 @@ class StudentHomescreen extends StatefulWidget {
 }
 
 class _StudentHomescreenState extends State<StudentHomescreen> {
+  String? _selectedDomain;
+  String? _selectedSort;
+
+  // Helper map to make the sort button text look nice
+  final Map<String, String> _sortLabels = {
+    'criticality_high_low': 'Criticality (High-Low)',
+    'criticality_low_high': 'Criticality (Low-High)',
+  };
   @override
   void initState() {
     super.initState();
@@ -84,35 +92,54 @@ class _StudentHomescreenState extends State<StudentHomescreen> {
                 alignment: Alignment.topLeft,
               ),
               SizedBox(
-                height: 90.0, // Give the list a fixed height
+                height: 60.0, // Adjusted height for chips
                 child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 5.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
                   scrollDirection: Axis.horizontal,
-                  // Set itemCount to the length of your data list
                   itemCount: issueCategories.length,
                   itemBuilder: (context, index) {
-                    // Get the current item's data
                     final category = issueCategories[index];
+                    final String categoryText = category['text'] as String;
+                    final bool isSelected = _selectedDomain == categoryText;
 
-                    // Add padding so the cards aren't touching
-                    // Use EdgeInsets.only for better spacing on the first and last items
-                    return Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                      // padding: EdgeInsets.only(
-                      //   left: index == 0
-                      //       ? 16.0
-                      //       : 8.0, // More padding for the first item
-                      //   right: index == issueCategories.length - 1
-                      //       ? 16.0
-                      //       : 8.0, // More for the last
-                      //   top: 8.0,
-                      //   bottom: 8.0,
-                      // ),
-                      child: IconTextCard(
-                        // Use the data from the list
-                        icon: category['icon'] as IconData,
-                        text: category['text'] as String,
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      // Use ChoiceChip for built-in selection state
+                      child: ChoiceChip(
+                        label: Text(
+                          categoryText,
+                          style: TextStyle(
+                            fontFamily: "AirbnbCereal",
+                            fontWeight: FontWeight.w500,
+                            color: isSelected ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        avatar: Icon(
+                          category['icon'] as IconData,
+                          size: 18.0,
+                          color: isSelected ? Colors.white : Colors.black87,
+                        ),
+                        selected: isSelected,
+                        // This is the color when selected
+                        selectedColor: Color.fromRGBO(255, 90, 96, 1.0),
+                        // This is the color when not selected
+                        backgroundColor: Color.fromRGBO(255, 251, 230, 1.0),
+                        // Style the border
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          side: BorderSide(
+                            color: isSelected
+                                ? Color.fromRGBO(255, 90, 96, 1.0)
+                                : Colors.grey.shade400,
+                          ),
+                        ),
+                        onSelected: (bool selected) {
+                          setState(() {
+                            // If selected, set the domain. If un-selected, set to null.
+                            _selectedDomain = selected ? categoryText : null;
+                          });
+                        },
                       ),
                     );
                   },
@@ -125,39 +152,53 @@ class _StudentHomescreenState extends State<StudentHomescreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Container(
                   alignment: Alignment.topRight,
-                  // This widget handles the pop-up menu UI
                   child: Theme(
                     data: Theme.of(context).copyWith(
+                      // ... (Your theme data is unchanged)
                       popupMenuTheme: PopupMenuThemeData(
-                        color: Color.fromRGBO(
-                            255, 251, 230, 1.0), // Your theme bg color
+                        color: Color.fromRGBO(255, 251, 230, 1.0),
                         elevation: 8.0,
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(10.0), // Adjust radius here
-                        ), // You can keep the shadow
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                       ),
                     ),
                     child: PopupMenuButton<String>(
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.black, // Text color
+                        foregroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        // --- ADD THIS ---
-                        // This sets the splash color
-                        overlayColor: Color.fromRGBO(255, 90, 96, 0.1), //
+                        overlayColor: Color.fromRGBO(255, 90, 96, 0.1),
                       ),
+                      // --- This function now updates the state ---
                       onSelected: (String result) {
-                        // No logic here, as requested
+                        setState(() {
+                          if (result == 'default') {
+                            _selectedSort = null; // Clear the sort
+                          } else {
+                            _selectedSort = result;
+                          }
+                        });
                       },
-                      // This builds the list of menu items
                       itemBuilder: (BuildContext context) =>
                           <PopupMenuEntry<String>>[
+                        // --- Added a "Default" option ---
+                        const PopupMenuItem<String>(
+                          value: 'default',
+                          child: Text(
+                            'Default',
+                            style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "AirbnbCereal"),
+                          ),
+                        ),
+                        const PopupMenuDivider(),
                         const PopupMenuItem<String>(
                           value: 'criticality_high_low',
                           child: Text(
-                            'Criticality level (high to low)',
+                            'Criticality (High-Low)',
                             style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w500,
@@ -167,7 +208,7 @@ class _StudentHomescreenState extends State<StudentHomescreen> {
                         const PopupMenuItem<String>(
                           value: 'criticality_low_high',
                           child: Text(
-                            'Criticality level (low to high)',
+                            'Criticality (Low-High)',
                             style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w500,
@@ -175,32 +216,37 @@ class _StudentHomescreenState extends State<StudentHomescreen> {
                           ),
                         )
                       ],
-                      // This is the child that is tapped (styled as a button)
+                      // --- The button's child now reflects the state ---
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12.0, vertical: 8.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.0),
-                          // border: Border.all(
-                          //     color: Colors.grey.shade400), // The outline
-                          // Set background to your theme color
                           color: const Color.fromRGBO(255, 251, 230, 1.0),
                         ),
-                        child: const Row(
-                          mainAxisSize:
-                              MainAxisSize.min, // Keep the row compact
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              "Sort By",
+                              // Show "Sort By" or the selected sort label
+                              _selectedSort == null
+                                  ? "Sort By"
+                                  : _sortLabels[_selectedSort!]!,
                               style: TextStyle(
-                                  fontFamily: "AirbnbCereal",
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black),
+                                fontFamily: "AirbnbCereal",
+                                fontWeight: FontWeight.w500,
+                                // Make text red if a sort is active
+                                color: _selectedSort == null
+                                    ? Colors.black
+                                    : Color.fromRGBO(255, 90, 96, 1.0),
+                              ),
                             ),
                             SizedBox(width: 4),
-                            // Add an icon to show it's a dropdown
-                            // Icon(Icons.filter_list,
-                            //     color: Colors.black, size: 20.0),
+                            Icon(Icons.filter_list,
+                                color: _selectedSort == null
+                                    ? Colors.black
+                                    : Color.fromRGBO(255, 90, 96, 1.0),
+                                size: 20.0),
                           ],
                         ),
                       ),
@@ -210,8 +256,25 @@ class _StudentHomescreenState extends State<StudentHomescreen> {
               ),
               Consumer<IssuesProvider>(
                 builder: (context, provider, child) {
+                  List<Issue> filteredIssues = List.from(provider.issues);
+                  if (_selectedDomain != null) {
+                    filteredIssues = filteredIssues
+                        .where((issue) => issue.domain == _selectedDomain)
+                        .toList();
+                  }
+                  if (_selectedSort != null) {
+                    if (_selectedSort == 'criticality_high_low') {
+                      // Sort by critical level, high to low
+                      filteredIssues
+                          .sort((a, b) => b.critical.compareTo(a.critical));
+                    } else if (_selectedSort == 'criticality_low_high') {
+                      // Sort by critical level, low to high
+                      filteredIssues
+                          .sort((a, b) => a.critical.compareTo(b.critical));
+                    }
+                  }
                   // --- State 1: Loading ---
-                  if (provider.isLoading && provider.issues.isEmpty) {
+                  if (provider.isLoading && filteredIssues.isEmpty) {
                     // Show a spinner only on initial load
                     return Container(
                       padding: EdgeInsets.all(40.0),
@@ -235,13 +298,18 @@ class _StudentHomescreenState extends State<StudentHomescreen> {
                   }
 
                   // --- State 3: Empty List ---
-                  if (provider.issues.isEmpty) {
+                  if (filteredIssues.isEmpty) {
                     return Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(40.0),
                         child: Text(
-                          'No issues have been reported yet. Be the first!',
+                          // Show a different message if filters are active
+                          _selectedDomain == null
+                              ? 'No issues have been reported yet. Be the first!'
+                              : 'No issues found for $_selectedDomain.',
                           textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: "AirbnbCereal", fontSize: 16.0),
                         ),
                       ),
                     );
@@ -249,12 +317,12 @@ class _StudentHomescreenState extends State<StudentHomescreen> {
 
                   // --- State 4: Success, Show Data ---
                   return ListView.builder(
-                    itemCount: provider.issues.length, // Use provider data
+                    itemCount: filteredIssues.length, // Use provider data
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       final issue =
-                          provider.issues[index]; // Get issue from provider
+                          filteredIssues[index]; // Get issue from provider
 
                       // Derive status since it's commented out in your model
                       final String status =
